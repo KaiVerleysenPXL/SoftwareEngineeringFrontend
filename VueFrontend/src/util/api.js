@@ -2,7 +2,7 @@ import { useCredentialsStore } from '@/stores/credentials';
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'http://localhost:5019', // TODO use env for local + prod options
+  baseURL: import.meta.env.VITE_API_BASE_URL, // TODO use env for local + prod options
 });
 
 api.interceptors.request.use(async (config) => {
