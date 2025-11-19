@@ -60,10 +60,7 @@
 
 <script setup>
 import { ref } from 'vue'
-import axios from 'axios'
-
-// Backend URL + port
-const API_BASE = 'http://localhost:5019'
+import api from '@/util/api'
 
 const date = ref('')
 const destination = ref('')
@@ -93,7 +90,7 @@ const submit = async () => {
       cost: cost.value
     }
 
-    await axios.post(`${API_BASE}/trip`, payload)
+    await api.post('/trip', payload)
     success.value = true
   } catch (e) {
     error.value = 'Could not save trip.'
