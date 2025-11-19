@@ -22,6 +22,7 @@ jobs:
 
       - name: Build
         run: npm run build
+        publish_dir: ./VueFrontend/dist
         working-directory: ./VueFrontend
 
       - name: Deploy to GitHub Pages
