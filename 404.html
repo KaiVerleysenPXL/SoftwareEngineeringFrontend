@@ -3,7 +3,14 @@
   <head>
     <meta http-equiv="refresh" content="0; url=/SoftwareEngineeringFrontend/" />
     <script>
-      window.location.replace('/SoftwareEngineeringFrontend/');
+      var base = '/SoftwareEngineeringFrontend';
+      var path =
+        window.location.pathname.replace(/^\/SoftwareEngineeringFrontend/, '') +
+        window.location.search +
+        window.location.hash;
+      document.cookie =
+        'redirect_path=' + encodeURIComponent(path) + '; path=' + base + '; max-age=60';
+      window.location.replace(base + '/');
     </script>
   </head>
   <body>
