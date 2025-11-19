@@ -6,7 +6,6 @@ const api = axios.create({
 });
 
 api.interceptors.request.use(async (config) => {
-  console.log('VITE_API_BASE_URL:', import.meta.env.VITE_API_BASE_URL);
   const credentialsStore = useCredentialsStore();
   config.headers['username'] = credentialsStore.username;
   config.headers['password'] = credentialsStore.password;
