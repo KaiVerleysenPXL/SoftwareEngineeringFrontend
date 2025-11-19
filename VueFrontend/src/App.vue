@@ -13,8 +13,7 @@ function checkRedirect() {
     .find((row) => row.startsWith('redirect_path='))
     ?.split('=')[1];
   if (redirectPath) {
-    document.cookie = 'redirect_path=; path=/SoftwareEngineeringFrontend; max-age=0';
-    router.push(decodeURIComponent(redirectPath));
+    router.push(decodeURIComponent(redirectPath).replace('%2', ''));
   }
 }
 
