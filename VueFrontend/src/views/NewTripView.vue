@@ -54,6 +54,9 @@
 <script setup>
 import { ref } from "vue";
 import { createTrip } from "@/services/tripService";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
 
 const date = ref("");
 const destination = ref("");
@@ -80,6 +83,11 @@ async function submit() {
     });
 
     success.value = true;
+
+    // Redirect to My Trips page after a short delay
+    setTimeout(() => {
+      router.push("/trips");
+    }, 600);
   } catch (e) {
     console.error(e);
     error.value = "Failed to save trip.";
