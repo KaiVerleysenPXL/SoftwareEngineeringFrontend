@@ -1,129 +1,83 @@
-<!-- src/views/NewTripView.vue -->
 <template>
-  <div class="new-trip">
-    <h1>Register Trip / Commute</h1>
-
+  <div>
+    <h2>Register New Trip</h2>
     <form @submit.prevent="submit">
-      <div class="field">
+      <div>
         <label>Date</label>
         <input type="date" v-model="date" required />
       </div>
 
-      <div class="field">
+      <div>
         <label>Destination</label>
-        <input type="text" v-model="destination" required />
+        <input v-model="destination" required />
       </div>
 
-      <div class="field">
+      <div>
         <label>Distance (km)</label>
-        <input type="number" step="0.1" min="0" v-model.number="distanceKm" required />
+        <input type="number" v-model.number="distanceKm" min="0" step="0.1" required />
       </div>
 
-      <div class="field">
-        <label>Transport type</label>
+      <div>
+        <label>Transport Type</label>
         <select v-model="transportType" required>
-          <option disabled value="">Choose…</option>
+          <option value="">-- choose --</option>
           <option>Car</option>
           <option>Bike</option>
           <option>Train</option>
           <option>Bus</option>
-          <option>Walk</option>
-          <option>Other</option>
         </select>
       </div>
 
-      <div class="field">
+      <div>
         <label>Purpose</label>
-        <input type="text" v-model="purpose" placeholder="Commute, client visit…" required />
+        <input v-model="purpose" required />
       </div>
 
-      <div class="field">
+      <div>
         <label>Cost</label>
-        <input type="number" step="0.01" min="0" v-model.number="cost" required />
+        <input type="number" v-model.number="cost" min="0" step="0.01" required />
       </div>
 
-      <!-- temp hard-coded, in a real app we get the logged in user -->
-      <div class="field">
-        <label>User ID</label>
-        <input type="number" v-model.number="userId" required />
-      </div>
+      <button type="submit">Save Trip</button>
 
-      <button type="submit" :disabled="loading">
-        {{ loading ? 'Saving…' : 'Save trip' }}
-      </button>
-
-      <p v-if="error" class="error">{{ error }}</p>
-      <p v-if="success" class="success">Trip saved!</p>
+      <p v-if="error" style="color:red">{{ error }}</p>
+      <p v-if="success" style="color:green">Trip saved!</p>
     </form>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import api from '@/util/api'
+import { ref } from "vue";
+import { createTrip } from "@/services/tripService";
 
-const date = ref('')
-const destination = ref('')
-const distanceKm = ref(null)
-const transportType = ref('')
-const purpose = ref('')
-const cost = ref(null)
-const userId = ref(1) // demo value
+const date = ref("");
+const destination = ref("");
+const distanceKm = ref(0);
+const transportType = ref("");
+const purpose = ref("");
+const cost = ref(0);
 
-const loading = ref(false)
-const error = ref('')
-const success = ref(false)
+const error = ref("");
+const success = ref(false);
 
-const submit = async () => {
-  loading.value = true
-  error.value = ''
-  success.value = false
+async function submit() {
+  error.value = "";
+  success.value = false;
 
   try {
-    const payload = {
-      userId: userId.value,
-      date: new Date(date.value).toISOString(),
+    await createTrip({
+      date: date.value,
       destination: destination.value,
       distanceKm: distanceKm.value,
       transportType: transportType.value,
       purpose: purpose.value,
-      cost: cost.value
-    }
+      cost: cost.value,
+    });
 
-    await api.post('/trip', payload)
-    success.value = true
+    success.value = true;
   } catch (e) {
-    error.value = 'Could not save trip.'
-    console.error(e)
-  } finally {
-    loading.value = false
+    console.error(e);
+    error.value = "Failed to save trip.";
   }
 }
 </script>
-
-<style scoped>
-.new-trip {
-  max-width: 500px;
-  margin: 2rem auto;
-}
-.field {
-  margin-bottom: 1rem;
-  display: flex;
-  flex-direction: column;
-}
-label {
-  font-weight: 600;
-  margin-bottom: 0.25rem;
-}
-button {
-  padding: 0.5rem 1rem;
-}
-.error {
-  color: red;
-  margin-top: 0.5rem;
-}
-.success {
-  color: green;
-  margin-top: 0.5rem;
-}
-</style>

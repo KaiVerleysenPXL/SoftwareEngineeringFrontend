@@ -2,6 +2,9 @@
 import { useCredentialsStore } from '@/stores/credentials';
 import { storeToRefs } from 'pinia';
 import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
 
 const credentialsStore = useCredentialsStore();
 const { username, password } = storeToRefs(credentialsStore);
@@ -14,6 +17,8 @@ async function handleLogin() {
     loginFailed.value = true;
   } else {
     loginFailed.value = false; // TODO redirect to home page
+
+    router.push("/homepage" );
   }
 }
 </script>
