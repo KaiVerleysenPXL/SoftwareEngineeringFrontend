@@ -3,6 +3,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import NewTripView from '../views/NewTripView.vue';
 import TripsView from '../views/TripsView.vue';
 import HomePageView from '@/views/HomePageView.vue';
+import ManagerTripsView from '@/views/ManagerTripsView.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -26,6 +27,11 @@ const router = createRouter({
       path: '/trips',
       name: 'Trips',
       component: TripsView
+    },
+    {
+      path: '/manager/trips',
+      name: 'ManagerTrips',
+      component: ManagerTripsView
     }
   ],
 });
