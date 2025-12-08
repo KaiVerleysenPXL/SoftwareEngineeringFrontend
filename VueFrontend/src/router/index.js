@@ -2,6 +2,7 @@ import LoginView from '@/views/LoginView.vue';
 import { createRouter, createWebHistory } from 'vue-router';
 import NewTripView from '../views/NewTripView.vue';
 import TripsView from '../views/TripsView.vue';
+import TripSummaryView from '../views/TripSummaryView.vue';
 import HomePageView from '@/views/HomePageView.vue';
 import ManagerTripsView from '@/views/ManagerTripsView.vue';
 
@@ -21,18 +22,23 @@ const router = createRouter({
     {
       path: '/trips/new',
       name: 'NewTrip',
-      component: NewTripView
+      component: NewTripView,
     },
     {
       path: '/trips',
       name: 'Trips',
-      component: TripsView
+      component: TripsView,
+    },
+    {
+      path: '/trips/summary',
+      name: 'TripSummary',
+      component: TripSummaryView,
     },
     {
       path: '/manager/trips',
       name: 'ManagerTrips',
-      component: ManagerTripsView
-    }
+      component: ManagerTripsView,
+    },
   ],
 });
 
