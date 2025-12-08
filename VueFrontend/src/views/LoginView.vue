@@ -18,7 +18,7 @@ async function handleLogin() {
   } else {
     loginFailed.value = false; // TODO redirect to home page
 
-    router.push("/homepage" );
+    router.push('/trips/summary');
   }
 }
 </script>

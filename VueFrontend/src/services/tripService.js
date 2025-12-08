@@ -1,17 +1,17 @@
 // services/tripService.js
-import api from "@/util/api";
+import api from '@/util/api';
 
 export async function createTrip(trip) {
   // trip must match backend: Date, Destination, DistanceKm, TransportType, Purpose, Cost
-  return await api.post("/api/trip", trip);
+  return await api.post('/api/trip', trip);
 }
 
 export async function getMyTrips() {
-  return await api.get("/api/trip/my");
+  return await api.get('/api/trip/my');
 }
 
 export async function getAllTrips() {
-  return await api.get("/api/trip/all");
+  return await api.get('/api/trip/all');
 }
 
 export async function approveTrip(tripId) {
@@ -20,4 +20,12 @@ export async function approveTrip(tripId) {
 
 export async function rejectTrip(tripId) {
   return await api.put(`/api/trip/${tripId}/reject`);
+}
+
+export async function getTripSummary(filters = {}) {
+  const params = new URLSearchParams();
+  if (filters.month) params.append('month', filters.month);
+  if (filters.transportType) params.append('transportType', filters.transportType);
+  const query = params.toString();
+  return await api.get(`/api/trip/summary${query ? '?' + query : ''}`);
 }
