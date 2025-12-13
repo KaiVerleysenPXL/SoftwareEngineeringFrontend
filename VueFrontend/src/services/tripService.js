@@ -29,3 +29,10 @@ export async function getTripSummary(filters = {}) {
   const query = params.toString();
   return await api.get(`/trips/summary${query ? '?' + query : ''}`);
 }
+
+export async function exportData(format) {
+  const response = await api.get(`/trips/export?format=${format}`, {
+    responseType: 'blob',
+  });
+  return response.data;
+}
