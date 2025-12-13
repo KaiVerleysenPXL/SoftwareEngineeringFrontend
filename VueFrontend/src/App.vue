@@ -1,6 +1,7 @@
 <script setup>
 import { onMounted } from 'vue';
 import { useRouter } from 'vue-router';
+import HeaderComponent from './components/HeaderComponent.vue';
 
 const router = useRouter();
 
@@ -23,6 +24,7 @@ onMounted(() => {
 </script>
 
 <template>
+  <HeaderComponent />
   <RouterView />
 </template>
 

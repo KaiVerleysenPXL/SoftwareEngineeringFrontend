@@ -108,8 +108,12 @@ function formatCost(cost) {
 }
 
 onMounted(() => {
-  loadSummary();
+  init();
 });
+defineExpose({ init });
+async function init() {
+  loadSummary();
+}
 </script>
 
 <style scoped>

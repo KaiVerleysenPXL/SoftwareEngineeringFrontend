@@ -3,22 +3,16 @@
     <div class="card">
       <div class="header">
         <h2 class="title">My Trips</h2>
-        <button class="secondary-btn" @click="goToNewTrip">
-          + New Trip
-        </button>
+        <button class="secondary-btn" @click="goToNewTrip">+ New Trip</button>
       </div>
 
-      <div v-if="loading" class="info">
-        Loading trips...
-      </div>
+      <div v-if="loading" class="info">Loading trips...</div>
 
       <div v-else-if="error" class="error">
         {{ error }}
       </div>
 
-      <div v-else-if="trips.length === 0" class="info">
-        You haven't submitted any trips yet.
-      </div>
+      <div v-else-if="trips.length === 0" class="info">You haven't submitted any trips yet.</div>
 
       <ul v-else class="trip-list">
         <li v-for="t in trips" :key="t.id" class="trip-item">
@@ -34,9 +28,7 @@
           </div>
 
           <div class="trip-right">
-            <div class="trip-cost">
-              {{ formatCost(t.cost) }} €
-            </div>
+            <div class="trip-cost">{{ formatCost(t.cost) }} €</div>
             <span class="status-pill" :class="statusClass(t.status)">
               {{ t.status }}
             </span>
@@ -48,55 +40,59 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
-import { useRouter } from "vue-router";
-import { getMyTrips } from "@/services/tripService";
+import { ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+import { getMyTrips } from '@/services/tripService';
 
 const router = useRouter();
 
 const trips = ref([]);
 const loading = ref(true);
-const error = ref("");
+const error = ref('');
 
 function goToNewTrip() {
-  router.push("/trips/new");
+  router.push('/trips/new');
 }
 
 function formatDate(dateStr) {
-  if (!dateStr) return "";
+  if (!dateStr) return '';
   const d = new Date(dateStr);
   return d.toLocaleDateString();
 }
 
 function formatCost(cost) {
-  if (cost == null) return "0.00";
+  if (cost == null) return '0.00';
   const num = Number(cost);
   return isNaN(num) ? cost : num.toFixed(2);
 }
 
 function statusClass(status) {
-  if (!status) return "status-pending";
+  if (!status) return 'status-pending';
   switch (status.toLowerCase()) {
-    case "approved":
-      return "status-approved";
-    case "rejected":
-      return "status-rejected";
+    case 'approved':
+      return 'status-approved';
+    case 'rejected':
+      return 'status-rejected';
     default:
-      return "status-pending";
+      return 'status-pending';
   }
 }
 
-onMounted(async () => {
+onMounted(() => {
+  init();
+});
+defineExpose({ init });
+async function init() {
   try {
     const res = await getMyTrips(); // expects /api/trip/my
     trips.value = res.data;
   } catch (e) {
     console.error(e);
-    error.value = "Failed to load trips.";
+    error.value = 'Failed to load trips.';
   } finally {
     loading.value = false;
   }
-});
+}
 </script>
 
 <style scoped>
@@ -112,7 +108,7 @@ onMounted(async () => {
   background: white;
   padding: 30px;
   border-radius: 14px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 }
 
 .header {

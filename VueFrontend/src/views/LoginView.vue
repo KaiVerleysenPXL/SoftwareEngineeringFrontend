@@ -1,7 +1,7 @@
 <script setup>
 import { useCredentialsStore } from '@/stores/credentials';
 import { storeToRefs } from 'pinia';
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
@@ -13,14 +13,21 @@ const loginFailed = ref(false);
 
 async function handleLogin() {
   let isLoggedIn = await credentialsStore.verify();
-  if (isLoggedIn == false) {
+  if (!isLoggedIn) {
     loginFailed.value = true;
   } else {
-    loginFailed.value = false; // TODO redirect to home page
-
-    router.push('/trips/summary');
+    loginFailed.value = false;
+    if (username.value == 'user') router.push('/trips');
+    if (username.value == 'admin') router.push('/admin');
   }
 }
+
+onMounted(async () => {
+  let isLoggedIn = await credentialsStore.verify();
+  if (isLoggedIn) {
+    router.push('/trips');
+  }
+});
 </script>
 
 <template>

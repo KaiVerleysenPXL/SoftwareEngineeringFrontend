@@ -1,14 +1,18 @@
 import LoginView from '@/views/LoginView.vue';
 import { createRouter, createWebHistory } from 'vue-router';
 import NewTripView from '../views/NewTripView.vue';
-import TripsView from '../views/TripsView.vue';
 import TripSummaryView from '../views/TripSummaryView.vue';
 import HomePageView from '@/views/HomePageView.vue';
 import ManagerTripsView from '@/views/ManagerTripsView.vue';
+import UserView from '@/views/UserView.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+    {
+      path: '/',
+      redirect: '/login',
+    },
     {
       path: '/login',
       name: 'login',
@@ -27,7 +31,7 @@ const router = createRouter({
     {
       path: '/trips',
       name: 'Trips',
-      component: TripsView,
+      component: UserView,
     },
     {
       path: '/trips/summary',
@@ -35,7 +39,7 @@ const router = createRouter({
       component: TripSummaryView,
     },
     {
-      path: '/manager/trips',
+      path: '/admin',
       name: 'ManagerTrips',
       component: ManagerTripsView,
     },
