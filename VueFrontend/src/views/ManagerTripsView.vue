@@ -29,11 +29,7 @@
 
         <div class="field">
           <label>Month</label>
-          <input
-            type="month"
-            v-model="filters.month"
-            @change="applyFilters"
-          />
+          <input type="month" v-model="filters.month" @change="applyFilters" />
         </div>
 
         <div class="field">
@@ -46,14 +42,10 @@
           </select>
         </div>
 
-        <button class="clear-btn" @click="clearFilters">
-          Clear Filters
-        </button>
+        <button class="clear-btn" @click="clearFilters">Clear Filters</button>
       </div>
 
-      <div v-if="loading" class="info">
-        Loading trips...
-      </div>
+      <div v-if="loading" class="info">Loading trips...</div>
 
       <div v-else-if="error" class="error">
         {{ error }}
@@ -71,20 +63,16 @@
                 {{ t.destination }}
               </div>
               <div class="trip-meta">
-                <span><strong>Employee:</strong> {{ t.employeeName || 'Unknown' }}</span>
+                <span><strong>Employee:</strong> {{ t.username || 'Unknown' }}</span>
                 <span>• {{ formatDate(t.date) }}</span>
                 <span>• {{ t.transportType }}</span>
                 <span>• {{ t.distanceKm }} km</span>
               </div>
-              <div class="trip-purpose">
-                <strong>Purpose:</strong> {{ t.purpose }}
-              </div>
+              <div class="trip-purpose"><strong>Purpose:</strong> {{ t.purpose }}</div>
             </div>
 
             <div class="trip-right">
-              <div class="trip-cost">
-                {{ formatCost(t.cost) }} €
-              </div>
+              <div class="trip-cost">{{ formatCost(t.cost) }} €</div>
               <span class="status-pill" :class="statusClass(t.status)">
                 {{ t.status }}
               </span>
@@ -114,42 +102,42 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from "vue";
-import { getAllTrips, approveTrip, rejectTrip } from "@/services/tripService";
+import { ref, computed, onMounted } from 'vue';
+import { getAllTrips, approveTrip, rejectTrip } from '@/services/tripService';
 
 const trips = ref([]);
 const loading = ref(true);
-const error = ref("");
+const error = ref('');
 const processingId = ref(null);
 
 const filters = ref({
-  employee: "",
-  transportType: "",
-  month: "",
-  status: ""
+  employee: '',
+  transportType: '',
+  month: '',
+  status: '',
 });
 
 function formatDate(dateStr) {
-  if (!dateStr) return "";
+  if (!dateStr) return '';
   const d = new Date(dateStr);
   return d.toLocaleDateString();
 }
 
 function formatCost(cost) {
-  if (cost == null) return "0.00";
+  if (cost == null) return '0.00';
   const num = Number(cost);
   return isNaN(num) ? cost : num.toFixed(2);
 }
 
 function statusClass(status) {
-  if (!status) return "status-pending";
+  if (!status) return 'status-pending';
   switch (status.toLowerCase()) {
-    case "approved":
-      return "status-approved";
-    case "rejected":
-      return "status-rejected";
+    case 'approved':
+      return 'status-approved';
+    case 'rejected':
+      return 'status-rejected';
     default:
-      return "status-pending";
+      return 'status-pending';
   }
 }
 
@@ -159,31 +147,28 @@ const filteredTrips = computed(() => {
   // Filter by employee
   if (filters.value.employee.trim()) {
     const searchTerm = filters.value.employee.toLowerCase();
-    result = result.filter(t =>
-      (t.employeeName || '').toLowerCase().includes(searchTerm)
-    );
+    result = result.filter((t) => (t.username || '').toLowerCase().includes(searchTerm));
   }
 
   // Filter by transport type
   if (filters.value.transportType) {
-    result = result.filter(t => t.transportType === filters.value.transportType);
+    result = result.filter((t) => t.transportType === filters.value.transportType);
   }
 
   // Filter by month
   if (filters.value.month) {
     const [year, month] = filters.value.month.split('-');
-    result = result.filter(t => {
+    result = result.filter((t) => {
       const tripDate = new Date(t.date);
-      return tripDate.getFullYear() === parseInt(year) &&
-             (tripDate.getMonth() + 1) === parseInt(month);
+      return (
+        tripDate.getFullYear() === parseInt(year) && tripDate.getMonth() + 1 === parseInt(month)
+      );
     });
   }
 
   // Filter by status
   if (filters.value.status) {
-    result = result.filter(t =>
-      t.status.toLowerCase() === filters.value.status.toLowerCase()
-    );
+    result = result.filter((t) => t.status.toLowerCase() === filters.value.status.toLowerCase());
   }
 
   return result;
@@ -194,29 +179,29 @@ function applyFilters() {
 }
 
 function clearFilters() {
-  filters.value.employee = "";
-  filters.value.transportType = "";
-  filters.value.month = "";
-  filters.value.status = "";
+  filters.value.employee = '';
+  filters.value.transportType = '';
+  filters.value.month = '';
+  filters.value.status = '';
 }
 
 async function handleApprove(tripId) {
   if (processingId.value) return;
 
   processingId.value = tripId;
-  error.value = "";
+  error.value = '';
 
   try {
     await approveTrip(tripId);
 
     // Update the trip status locally
-    const trip = trips.value.find(t => t.id === tripId);
+    const trip = trips.value.find((t) => t.id === tripId);
     if (trip) {
-      trip.status = "Approved";
+      trip.status = 'Approved';
     }
   } catch (e) {
     console.error(e);
-    error.value = "Failed to approve trip.";
+    error.value = 'Failed to approve trip.';
   } finally {
     processingId.value = null;
   }
@@ -226,19 +211,19 @@ async function handleReject(tripId) {
   if (processingId.value) return;
 
   processingId.value = tripId;
-  error.value = "";
+  error.value = '';
 
   try {
     await rejectTrip(tripId);
 
     // Update the trip status locally
-    const trip = trips.value.find(t => t.id === tripId);
+    const trip = trips.value.find((t) => t.id === tripId);
     if (trip) {
-      trip.status = "Rejected";
+      trip.status = 'Rejected';
     }
   } catch (e) {
     console.error(e);
-    error.value = "Failed to reject trip.";
+    error.value = 'Failed to reject trip.';
   } finally {
     processingId.value = null;
   }
@@ -246,14 +231,14 @@ async function handleReject(tripId) {
 
 async function loadTrips() {
   loading.value = true;
-  error.value = "";
+  error.value = '';
 
   try {
     const res = await getAllTrips();
     trips.value = res.data;
   } catch (e) {
     console.error(e);
-    error.value = "Failed to load trips.";
+    error.value = 'Failed to load trips.';
   } finally {
     loading.value = false;
   }
@@ -277,7 +262,7 @@ onMounted(() => {
   background: white;
   padding: 30px;
   border-radius: 14px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 }
 
 .header {
@@ -329,7 +314,7 @@ input:focus,
 select:focus {
   outline: none;
   border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59,130,246,0.2);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
 }
 
 .clear-btn {

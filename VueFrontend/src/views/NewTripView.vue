@@ -4,7 +4,6 @@
       <h2 class="title">Register New Trip</h2>
 
       <form @submit.prevent="submit" class="form">
-
         <div class="field">
           <label>Date</label>
           <input type="date" v-model="date" required />
@@ -24,10 +23,9 @@
           <label>Transport Type</label>
           <select v-model="transportType" required>
             <option value="">Choose transport type</option>
-            <option>Car</option>
             <option>Bike</option>
-            <option>Train</option>
-            <option>Bus</option>
+            <option>Car</option>
+            <option>Public Transport</option>
           </select>
         </div>
 
@@ -38,38 +36,54 @@
 
         <div class="field">
           <label>Cost (€)</label>
-          <input type="number" v-model.number="cost" min="0" step="0.01" required />
+          <input
+            type="number"
+            v-model.number="cost"
+            min="0"
+            step="0.01"
+            required
+            :readonly="transportType === 'Bike' || transportType === 'Car'"
+            :class="{ readonly: transportType === 'Bike' || transportType === 'Car' }"
+          />
         </div>
 
         <button type="submit" class="submit-btn">Save Trip</button>
 
         <p v-if="error" class="error">{{ error }}</p>
         <p v-if="success" class="success">Trip saved!</p>
-
       </form>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from "vue";
-import { createTrip } from "@/services/tripService";
-import { useRouter } from "vue-router";
+import { ref, watch } from 'vue';
+import { createTrip } from '@/services/tripService';
+import { useRouter } from 'vue-router';
 
 const router = useRouter();
 
-const date = ref("");
-const destination = ref("");
+const date = ref('');
+const destination = ref('');
 const distanceKm = ref(0);
-const transportType = ref("");
-const purpose = ref("");
+const transportType = ref('');
+const purpose = ref('');
 const cost = ref(0);
 
-const error = ref("");
+const error = ref('');
 const success = ref(false);
 
+// Auto-calculate cost for Bike and Car
+watch([transportType, distanceKm], () => {
+  if (transportType.value === 'Bike') {
+    cost.value = parseFloat((distanceKm.value * 0.25).toFixed(2));
+  } else if (transportType.value === 'Car') {
+    cost.value = parseFloat((distanceKm.value * 0.4).toFixed(2));
+  }
+});
+
 async function submit() {
-  error.value = "";
+  error.value = '';
   success.value = false;
 
   try {
@@ -84,13 +98,21 @@ async function submit() {
 
     success.value = true;
 
+    // Clear the form
+    date.value = '';
+    destination.value = '';
+    distanceKm.value = 0;
+    transportType.value = '';
+    purpose.value = '';
+    cost.value = 0;
+
     // Redirect to My Trips page after a short delay
     setTimeout(() => {
-      router.push("/trips");
+      router.push('/trips');
     }, 600);
   } catch (e) {
     console.error(e);
-    error.value = "Failed to save trip.";
+    error.value = 'Failed to save trip.';
   }
 }
 </script>
@@ -108,7 +130,7 @@ async function submit() {
   background: white;
   padding: 30px;
   border-radius: 14px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 }
 
 .title {
@@ -142,11 +164,16 @@ select {
   font-size: 14px;
 }
 
+input.readonly {
+  background-color: #f3f4f6;
+  cursor: default;
+}
+
 input:focus,
 select:focus {
   outline: none;
   border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59,130,246,0.2);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
 }
 
 .submit-btn {

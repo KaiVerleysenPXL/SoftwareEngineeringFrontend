@@ -9,11 +9,15 @@ export const useCredentialsStore = defineStore('credentials', {
   actions: {
     async verify() {
       try {
-        let res = await api.post('/check');
+        let res = await api.post('/logincheck');
         return res.status == 200;
       } catch {
         return false;
       }
+    },
+    clear() {
+      this.username = null;
+      this.password = null;
     },
   },
 });

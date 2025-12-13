@@ -3,23 +3,23 @@ import api from '@/util/api';
 
 export async function createTrip(trip) {
   // trip must match backend: Date, Destination, DistanceKm, TransportType, Purpose, Cost
-  return await api.post('/api/trip', trip);
+  return await api.post('/trips', trip);
 }
 
 export async function getMyTrips() {
-  return await api.get('/api/trip/my');
+  return await api.get('/trips');
 }
 
 export async function getAllTrips() {
-  return await api.get('/api/trip/all');
+  return await api.get('/trips/all');
 }
 
 export async function approveTrip(tripId) {
-  return await api.put(`/api/trip/${tripId}/approve`);
+  return await api.post(`/trips/${tripId}/approve`);
 }
 
 export async function rejectTrip(tripId) {
-  return await api.put(`/api/trip/${tripId}/reject`);
+  return await api.post(`/trips/${tripId}/reject`);
 }
 
 export async function getTripSummary(filters = {}) {
@@ -27,5 +27,5 @@ export async function getTripSummary(filters = {}) {
   if (filters.month) params.append('month', filters.month);
   if (filters.transportType) params.append('transportType', filters.transportType);
   const query = params.toString();
-  return await api.get(`/api/trip/summary${query ? '?' + query : ''}`);
+  return await api.get(`/trips/summary${query ? '?' + query : ''}`);
 }
