@@ -19,6 +19,11 @@
           <option value="Bike">Bike</option>
           <option value="Plane">Plane</option>
         </select>
+
+        <div class="download-buttons">
+          <button @click="downloadCSV" class="download-btn">Download CSV</button>
+          <button @click="downloadPDF" class="download-btn">Download PDF</button>
+        </div>
       </div>
 
       <div v-if="loading" class="info">Loading summary...</div>
@@ -59,7 +64,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import { getTripSummary } from '@/services/tripService';
+import { getTripSummary, exportData } from '@/services/tripService';
 
 const summary = ref({});
 const loading = ref(true);
@@ -105,6 +110,40 @@ function formatCost(cost) {
   if (cost == null) return '0.00';
   const num = Number(cost);
   return isNaN(num) ? cost : num.toFixed(2);
+}
+
+async function downloadCSV() {
+  try {
+    const blob = await exportData('csv');
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `trip-summary-${Date.now()}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(a);
+  } catch (e) {
+    console.error(e);
+    error.value = 'Failed to download CSV.';
+  }
+}
+
+async function downloadPDF() {
+  try {
+    const blob = await exportData('pdf');
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `trip-summary-${Date.now()}.pdf`;
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(a);
+  } catch (e) {
+    console.error(e);
+    error.value = 'Failed to download PDF.';
+  }
 }
 
 onMounted(() => {
@@ -155,6 +194,27 @@ async function init() {
   font-size: 14px;
   background: white;
   cursor: pointer;
+}
+
+.download-buttons {
+  display: flex;
+  gap: 10px;
+  margin-left: auto;
+}
+
+.download-btn {
+  padding: 8px 16px;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.download-btn:hover {
+  background: #2563eb;
 }
 
 .info {
