@@ -3,7 +3,6 @@
     <div class="card">
       <div class="header">
         <h2 class="title">My Trips</h2>
-        <button class="secondary-btn" @click="goToNewTrip">+ New Trip</button>
       </div>
 
       <div v-if="loading" class="info">Loading trips...</div>
